@@ -16,8 +16,12 @@ df = pd.read_csv('data/movies_ratings.csv', header=0)
 df.head()
 df.info()
 
-X_all_df = df.drop('22', axis=1)        # everything except the 'label' column
-y_all_df = df[ '22' ]
+print("+++ End of pandas +++\n")
+
+X_all_df = df.drop(['rating','title'], axis=1)        # everything except the 'label' column
+y_all_df = df[ 'rating' ]
+
+print("+++ start of numpy/scikit-learn +++")
 
 X_all = X_all_df.values        # iloc == "integer locations" of rows/cols
 y_all = y_all_df.values
@@ -33,12 +37,12 @@ y_test = y_labeled[:TEST_SIZE]
 x_train = x_labeled[TEST_SIZE:]
 y_train = y_labeled[TEST_SIZE:]
 
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.neighbors import KNeighborsRegressor
 
 best_score = 0
 best_k = 0
 for k in [1,3,5,7,9,11,15,21,32,42,51,71,91]:
-  knn = KNeighborsClassifier(n_neighbors=k)
+  knn = KNeighborsRegressor(n_neighbors=k)
   cv_scores = cross_val_score( knn, x_train, y_train, cv=5 )
   av = cv_scores.mean()
   print(k , 'neighbors has average: ', av)
@@ -47,7 +51,7 @@ for k in [1,3,5,7,9,11,15,21,32,42,51,71,91]:
       best_k = k
 print("best k is", best_k)
 
-knn_train = KNeighborsClassifier(n_neighbors=best_k) 
+knn_train = KNeighborsRegressor(n_neighbors=best_k) 
 knn_train.fit(x_train, y_train) 
 print("\nCreated and trained a knn classifier with k =", best_k)
 
@@ -55,9 +59,10 @@ print("\nCreated and trained a knn classifier with k =", best_k)
 print("For the input data in X_test,")
 print("The predicted outputs are")
 predicted_labels = knn_train.predict(x_test)
-print(predicted_labels)
+print(predicted_labels[:10])
 
 print("and the actual labels are")
 actual_labels = y_test
-print(actual_labels)
+print(actual_labels[:10])
 
+# accuracy
