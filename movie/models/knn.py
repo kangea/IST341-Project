@@ -66,3 +66,17 @@ actual_labels = y_test
 print(actual_labels[:10])
 
 # accuracy
+from sklearn.metrics import mean_squared_error
+
+# squared_errors = []
+# for p in predicted_labels:
+#     for a in actual_labels:
+#         squared_errors.append((a-p)**2)
+# ase = sum(squared_errors)/len(squared_errors)
+variance = np.var(actual_labels)
+
+mse = mean_squared_error(actual_labels, predicted_labels)
+
+print("The MSE of the KNN model is:", mse)
+r_squared = 1-(mse/variance)
+print("The R-squared is:", r_squared)
