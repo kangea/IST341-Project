@@ -10,6 +10,7 @@ django = "*"
 requests = "*"
 scikit-learn = "*"
 turicreate = "*"
+ipython = "*"
 
 [requires]
 python_version = "3.6"
