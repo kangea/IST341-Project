@@ -18,7 +18,7 @@ df.info()
 
 print("+++ End of pandas +++\n")
 
-X_all_df = df.drop(['rating','title'], axis=1)        # everything except the 'label' column
+X_all_df = df.drop(['rating','title', 'movieId'], axis=1)        # everything except the 'label' column
 y_all_df = df[ 'rating' ]
 
 print("+++ start of numpy/scikit-learn +++")
