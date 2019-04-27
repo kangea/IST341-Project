@@ -12,7 +12,7 @@ except ImportError:
     except:
         print("No cross_val_score!")
 
-df = pd.read_csv('data/movies_ratings.csv', header=0)
+df = pd.read_csv('../../data/movies_ratings.csv', header=0)
 df.head()
 df.info()
 
