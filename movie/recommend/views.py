@@ -6,6 +6,7 @@ from django.http import Http404
 from django.core import serializers
 from django import forms
 from .service.recommend_service import get_popular_movies_mock
+from .service.recommend_service import get_all_movies
 
 # Create your views here.
 
@@ -22,7 +23,7 @@ def home(request):
   return render(request, 'index.html', context)
 
 def recform(request):
-  movie_list = []
+  movie_list = get_all_movies()
   context = {
     "movie_list":movie_list
     }

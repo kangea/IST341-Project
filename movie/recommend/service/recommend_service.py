@@ -86,5 +86,7 @@ def get_popular_movies(users, size):
   recomm = recomm.T.to_dict().values() 
   return recomm
 
-#def get_recommendation(data ):
+def get_all_movies():
+  movies_list = movies.T.to_dict().values() 
+  return movies_list
 
