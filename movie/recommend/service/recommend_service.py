@@ -84,9 +84,16 @@ def get_popular_movies(users, size):
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
+  recomm = format_imdbid(recomm)
   return recomm
+
+def format_imdbid(items):
+  for item in items:
+    item["imdbId"] = format(item["imdbId"], '07d')
+  return items
 
 def get_all_movies():
   movies_list = movies.T.to_dict().values() 
+  recomm = format_imdbid(movies_list)
   return movies_list
 
