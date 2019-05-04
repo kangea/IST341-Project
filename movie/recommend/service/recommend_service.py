@@ -4,7 +4,8 @@ import os
 from sklearn.model_selection import train_test_split
 
 file_link = "links.csv"
-file_movies_ratings = "movies_ratings.csv"
+#file_movies_ratings = "movies_ratings.csv"
+file_movies_ratings = "movies_ratings_clean.csv"
 file_movies_links = "movies_links.csv"
 file_movies = "movies.csv"
 file_ratings = "ratings.csv"
@@ -58,11 +59,14 @@ def recommend_model(model, users, rec_size):
 
 def test_modeling():
   users = [135,136,137]
+  train_data = movies_ratings[["userId", "movieId", "rating"]]
+  train_data = tc.SFrame(train_data)
   model_po = model_popular(train_data, user_id, item_id, target)
-  recommend_model(model_po, users, 5)
-
+  rm = recommend_model(model_po, users, 5)
+  rm.print_rows(6)
   model_c = model_cosine(train_data, user_id, item_id, target)
-  recommend_model(model_c, users, 5)
+  rm = recommend_model(model_c, users, 5)
+  rm.print_rows(6)
 
 def get_popular_movies_mock():
   """
@@ -76,6 +80,31 @@ def get_popular_movies_mock():
     {'userId': 135, 'movieId': 99, 'score': 5.0, 'rank': 5, 'title': 'Heidi Fleiss: Hollywood Madam (1995)', 'imdbId': 113283}, 
     {'userId': 135, 'movieId': 70451, 'score': 5.0, 'rank': 6, 'title': 'Max Manus (2008)', 'imdbId': 1029235}]
   
+  return mock
+
+def get_mock_user_likes():
+  mock = [
+    {
+      'movieId':3851,
+      'rating':3
+    },
+    {
+      'movieId':8142,
+      'rating':4
+    },
+    {
+      'movieId':136447,
+      'rating':5
+    },
+    {
+      'movieId':99,
+      'rating':1
+    },
+    {
+      'movieId':70451,
+      'rating':1
+    }                
+  ]
   return mock
 
 def get_popular_movies(users, size):
@@ -94,6 +123,23 @@ def format_imdbid(items):
 
 def get_all_movies():
   movies_list = movies.T.to_dict().values() 
-  recomm = format_imdbid(movies_list)
   return movies_list
+
+def get_personalized_recomm(movie_list):
+  user = 9999999
+  for item in movie_list:
+    item["userId"] = user
+
+  train_data = movies_ratings[["userId", "movieId", "rating"]]
+  train_data.append(movie_list)
+  train_data = tc.SFrame(train_data)
+
+  trained_model = model_popular(train_data, user_id, item_id, target)
+  recomm = recommend_model(trained_model, [user], 6)
+  recomm = recomm.to_dataframe()
+  recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
+  recomm = recomm.T.to_dict().values() 
+  recomm = format_imdbid(recomm)
+  return recomm
+
 
