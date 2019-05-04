@@ -15,5 +15,5 @@ def health(request):
 
 def home(request):
   context = {}
-  #return render(request, 'home.html', context)
-  return HttpResponse("Application home page", content_type="text/plain")
+  return render(request, 'index.html', context)
+# return HttpResponse("Application home page", content_type="text/plain")
