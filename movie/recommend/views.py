@@ -20,4 +20,10 @@ def home(request):
     "popular_movies":popular_movies
     }
   return render(request, 'index.html', context)
-# return HttpResponse("Application home page", content_type="text/plain")
+
+def recform(request):
+  movie_list = []
+  context = {
+    "movie_list":movie_list
+    }
+  return render(request, 'recform.html', context)
