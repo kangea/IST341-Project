@@ -5,6 +5,7 @@ from django.http import HttpResponse, JsonResponse
 from django.http import Http404
 from django.core import serializers
 from django import forms
+from .service.recommend_service import get_popular_movies_mock
 
 # Create your views here.
 
@@ -14,6 +15,9 @@ def health(request):
 
 
 def home(request):
-  context = {}
+  popular_movies = get_popular_movies_mock()
+  context = {
+    "popular_movies":popular_movies
+    }
   return render(request, 'index.html', context)
 # return HttpResponse("Application home page", content_type="text/plain")
