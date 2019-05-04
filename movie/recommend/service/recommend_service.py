@@ -41,7 +41,7 @@ def split_data(data):
     return train_data, test_data
 
 
-train_data, test_data = split_data(movies_ratings)
+#train_data, test_data = split_data(movies_ratings)
 
 def model_popular(train_data, user_id, item_id, target):
   return tc.popularity_recommender.create(train_data,user_id=user_id,item_id=item_id,target=target)
@@ -108,6 +108,8 @@ def get_mock_user_likes():
   return mock
 
 def get_popular_movies(users, size):
+  train_data = movies_ratings[["userId", "movieId", "rating"]]
+  train_data = tc.SFrame(train_data)
   trained_model = model_popular(train_data, user_id, item_id, target)
   recomm = recommend_model(trained_model, [135], 6)
   recomm = recomm.to_dataframe()
