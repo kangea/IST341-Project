@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 
 file_link = "links.csv"
 file_movies_ratings = "movies_ratings.csv"
+file_movies_links = "movies_links.csv"
 file_movies = "movies.csv"
 file_ratings = "ratings.csv"
 file_tags = "tags.csv"
@@ -13,6 +14,8 @@ dir_loc = os.path.dirname(os.path.realpath(__file__))+'/../../../data/'
 #link_sf = tc.SFrame.read_csv('+file_link)
 
 movies_ratings = pd.read_csv(dir_loc+file_movies_ratings)
+movies_link = pd.read_csv(dir_loc+file_link)
+movies_all = pd.read_csv(dir_loc+file_movies_links)
 movies = pd.read_csv(dir_loc+file_movies)
 link = pd.read_csv(dir_loc+file_link)
 
@@ -66,12 +69,12 @@ def get_popular_movies_mock():
   mock data of popular movies for devlopment purpose
   """
   mock = [
-    {'userId': 135.0, 'movieId': 304.0, 'score': 5.0, 'rank': 1.0}, 
-    {'userId': 135.0, 'movieId': 136359.0, 'score': 5.0, 'rank': 2.0}, 
-    {'userId': 135.0, 'movieId': 134109.0, 'score': 5.0, 'rank': 3.0}, 
-    {'userId': 135.0, 'movieId': 108078.0, 'score': 5.0, 'rank': 4.0}, 
-    {'userId': 135.0, 'movieId': 86668.0, 'score': 5.0, 'rank': 5.0}, 
-    {'userId': 135.0, 'movieId': 112512.0, 'score': 5.0, 'rank': 6.0}]
+    {'userId': 135, 'movieId': 141816, 'score': 5.0, 'rank': 1, 'title': '12 Chairs (1976)', 'imdbId': 75468}, 
+    {'userId': 135, 'movieId': 3851, 'score': 5.0, 'rank': 2, 'title': "I'm the One That I Want (2000)", 'imdbId': 251739}, 
+    {'userId': 135, 'movieId': 8142, 'score': 5.0, 'rank': 3, 'title': 'Dead or Alive: Hanzaisha (1999)', 'imdbId': 221111}, 
+    {'userId': 135, 'movieId': 136447, 'score': 5.0, 'rank': 4, 'title': 'George Carlin: You Are All Diseased (1999)', 'imdbId': 246645}, 
+    {'userId': 135, 'movieId': 99, 'score': 5.0, 'rank': 5, 'title': 'Heidi Fleiss: Hollywood Madam (1995)', 'imdbId': 113283}, 
+    {'userId': 135, 'movieId': 70451, 'score': 5.0, 'rank': 6, 'title': 'Max Manus (2008)', 'imdbId': 1029235}]
   
   return mock
 
@@ -79,6 +82,7 @@ def get_popular_movies(users, size):
   trained_model = model_popular(train_data, user_id, item_id, target)
   recomm = recommend_model(trained_model, [135], 6)
   recomm = recomm.to_dataframe()
+  recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   return recomm
 
