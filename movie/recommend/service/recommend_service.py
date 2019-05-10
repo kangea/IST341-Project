@@ -24,6 +24,10 @@ user_id = "userId"
 item_id = "movieId"
 target = "rating"
 
+# train will all data for web request
+train_data_full = movies_ratings[["userId", "movieId", "rating"]]
+train_data_full = tc.SFrame(train_data_full)
+
 def split_data(data):
     '''
     Splits dataset into training and test set.
@@ -73,7 +77,6 @@ def get_popular_movies_mock():
   mock data of popular movies for devlopment purpose
   """
   mock = [
-    {'userId': 135, 'movieId': 141816, 'score': 5.0, 'rank': 1, 'title': '12 Chairs (1976)', 'imdbId': 75468}, 
     {'userId': 135, 'movieId': 3851, 'score': 5.0, 'rank': 2, 'title': "I'm the One That I Want (2000)", 'imdbId': 251739}, 
     {'userId': 135, 'movieId': 8142, 'score': 5.0, 'rank': 3, 'title': 'Dead or Alive: Hanzaisha (1999)', 'imdbId': 221111}, 
     {'userId': 135, 'movieId': 136447, 'score': 5.0, 'rank': 4, 'title': 'George Carlin: You Are All Diseased (1999)', 'imdbId': 246645}, 
@@ -108,9 +111,8 @@ def get_mock_user_likes():
   return mock
 
 def get_popular_movies(users, size):
-  train_data = movies_ratings[["userId", "movieId", "rating"]]
-  train_data = tc.SFrame(train_data)
-  trained_model = model_popular(train_data, user_id, item_id, target)
+
+  trained_model = model_popular(train_data_full, user_id, item_id, target)
   recomm = recommend_model(trained_model, [135], 6)
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
@@ -136,12 +138,20 @@ def get_personalized_recomm(movie_list):
   for item in movie_list:
     item["userId"] = user
 
-  train_data = movies_ratings[["userId", "movieId", "rating"]]
-  train_data.append(movie_list)
-  train_data = tc.SFrame(train_data)
+  frame_obj = {
+    "userId":[],
+    "movieId":[],
+    "rating":[]
+  }
+  for item in movie_list:
+    frame_obj["userId"].append(item["userId"])
+    frame_obj["movieId"].append(int(item["movieId"]))
+    frame_obj["rating"].append(float(item["rating"]))
 
-  trained_model = model_popular(train_data, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 6)
+  train_data_full.append(tc.SFrame(frame_obj))
+
+  trained_model = model_cosine(train_data_full, user_id, item_id, target)
+  recomm = recommend_model(trained_model, [user], 10)
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 

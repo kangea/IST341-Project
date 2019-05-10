@@ -7,6 +7,7 @@ from django.core import serializers
 from django import forms
 from .service.recommend_service import get_popular_movies_mock
 from .service.recommend_service import get_all_movies
+from .service.recommend_service import get_personalized_recomm 
 import json
 
 # Create your views here.
@@ -35,12 +36,15 @@ def recform(request):
     watchedMovies = []
     if form.is_valid():
       #do something if form is valid
-      watchedMovies.append(form.cleaned_data['movie1'])
-      watchedMovies.append(form.cleaned_data['movie2'])
-      watchedMovies.append(form.cleaned_data['movie3'])
-      watchedMovies.append(form.cleaned_data['movie4'])
-      watchedMovies.append(form.cleaned_data['movie5'])
+      watchedMovies.append(getMovieidAndRating(form, "movie1","Movie1Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie2","Movie2Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie3","Movie3Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie4","Movie4Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie5","Movie5Rating"))
+
       print("WM",watchedMovies)
+      recommended_movies = get_personalized_recomm(watchedMovies)
+      print(recommended_movies)
       return render(request, 'results.html', context)  
 
   return render(request, 'recform.html', context)
@@ -67,3 +71,15 @@ class RecommendForm(forms.Form):
   movie3 = forms.CharField(label='Movie 3', max_length=100)
   movie4 = forms.CharField(label='Movie 4', max_length=100)
   movie5 = forms.CharField(label='Movie 5', max_length=100)
+  Movie1Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie2Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie3Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie4Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie5Rating = forms.IntegerField(widget=forms.RadioSelect())
+
+def getMovieidAndRating(form, id_att, rating_att):
+  id = form.cleaned_data[id_att].split(":")[0]
+  rating = form.cleaned_data[rating_att]
+  obj = {"movieId": id, "rating":rating}
+
+  return obj
