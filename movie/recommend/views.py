@@ -45,6 +45,7 @@ def recform(request):
       print("WM",watchedMovies)
       recommended_movies = get_personalized_recomm(watchedMovies)
       print(recommended_movies)
+      context["recommended_movies"] = recommended_movies
       return render(request, 'results.html', context)  
 
   return render(request, 'recform.html', context)
