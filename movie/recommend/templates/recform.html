@@ -4,13 +4,14 @@
 <br>
 <h2>Movie Recommendation Survey</h2>
 <p>
-  Please tell us five movies you've watched and their ratings and we will recommend six more movies!
+  Please tell us five movies you've watched and their ratings and we will recommend some more movies!
 </p>
 
 <form method="POST"> {% csrf_token %}
   <!-- MOVIE 1 -->
     <div class="form-group">
-      <input class=" form-control typeahead" name="movie1" type="text" placeholder="Select Movie">
+      <label for="movie1" class="col-form-label mr-sm-2">Movie 1</label>
+      <input class="form-control typeahead" name="movie1" type="text" placeholder="Select Movie">
       <input id ="movie1" name="hiddenmovie1" type="hidden" >
     </div>
     <div class="form-group">
@@ -40,6 +41,7 @@
     
   <!-- MOVIE 2 -->
     <div class="form-group">
+        <label for="movie2" class="col-form-label mr-sm-2">Movie 2</label>
       <input class=" form-control typeahead" name="movie2" type="text" placeholder="Select Movie">
       <input id ="movie2" name="hiddenmovie2" type="hidden" >
     </div>
@@ -69,6 +71,7 @@
 
   <!-- MOVIE 3 -->
     <div class="form-group">
+      <label for="movie3" class="col-form-label mr-sm-2">Movie 3</label>
       <input class=" form-control typeahead" name="movie3" type="text" placeholder="Select Movie">
       <input id ="movie3" name="hiddenmovie3" type="hidden" >
     </div>
@@ -98,6 +101,7 @@
   
   <!-- MOVIE 4 -->
     <div class="form-group">
+      <label for="movie4" class="col-form-label mr-sm-2">Movie 4</label>
       <input class=" form-control typeahead" name="movie4" type="text" placeholder="Select Movie">
       <input id ="movie4" name="hiddenmovie4" type="hidden" >
     </div>
@@ -127,6 +131,7 @@
 
   <!-- MOVIE 5 -->
     <div class="form-group">
+      <label for="movie5" class="col-form-label mr-sm-2">Movie 5</label>
       <input class=" form-control typeahead" name="movie5" type="text" placeholder="Select Movie">
       <input id ="movie5" name="hiddenmovie5" type="hidden" >
     </div> 
