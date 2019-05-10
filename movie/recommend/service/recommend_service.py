@@ -1,7 +1,7 @@
 import pandas as pd 
 import turicreate as tc
 import os
-from sklearn.model_selection import train_test_split
+#from sklearn.model_selection import train_test_split
 
 file_link = "links.csv"
 #file_movies_ratings = "movies_ratings.csv"
