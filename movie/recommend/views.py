@@ -26,7 +26,8 @@ def home(request):
 def recform(request):
   movie_list = get_all_movies()
   context = {
-    "movie_list":movie_list
+    "movie_list":movie_list,
+    "recommended_movies":get_popular_movies_mock()
     }
 
   if request.method == "POST":
