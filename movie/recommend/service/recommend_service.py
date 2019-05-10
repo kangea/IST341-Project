@@ -56,6 +56,9 @@ def model_cosine(train_data, user_id, item_id, target):
 def model_pearson(train_data, user_id, item_id, target):
   return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id,target=target, similarity_type='pearson')
 
+def model_general(train_data, user_id, item_id, target):
+  return tc.recommender.create(train_data, user_id=user_id, item_id=item_id, target='rating')
+
 def recommend_model(model, users, rec_size):
   recommand = model.recommend(users=users, k=rec_size)
   #recommand.print_rows(display_size)
@@ -133,7 +136,7 @@ def get_all_movies():
 
   return all_movie
 
-def get_personalized_recomm(movie_list):
+def get_cosine_recomm(movie_list):
   user = 9999999
   for item in movie_list:
     item["userId"] = user
@@ -157,5 +160,56 @@ def get_personalized_recomm(movie_list):
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
   return recomm
+
+def get_pearson_recomm(movie_list):
+  user = 9999999
+  for item in movie_list:
+    item["userId"] = user
+
+  frame_obj = {
+    "userId":[],
+    "movieId":[],
+    "rating":[]
+  }
+  for item in movie_list:
+    frame_obj["userId"].append(item["userId"])
+    frame_obj["movieId"].append(int(item["movieId"]))
+    frame_obj["rating"].append(float(item["rating"]))
+
+  train_data_full.append(tc.SFrame(frame_obj))
+
+  trained_model = model_pearson(train_data_full, user_id, item_id, target)
+  recomm = recommend_model(trained_model, [user], 10)
+  recomm = recomm.to_dataframe()
+  recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
+  recomm = recomm.T.to_dict().values() 
+  recomm = format_imdbid(recomm)
+  return recomm
+
+def get_recomm(movie_list):
+  user = 9999999
+  for item in movie_list:
+    item["userId"] = user
+
+  frame_obj = {
+    "userId":[],
+    "movieId":[],
+    "rating":[]
+  }
+  for item in movie_list:
+    frame_obj["userId"].append(item["userId"])
+    frame_obj["movieId"].append(int(item["movieId"]))
+    frame_obj["rating"].append(float(item["rating"]))
+
+  train_data_full.append(tc.SFrame(frame_obj))
+
+  trained_model = model_general(train_data_full, user_id, item_id, target)
+  recomm = recommend_model(trained_model, [user], 10)
+  recomm = recomm.to_dataframe()
+  recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
+  recomm = recomm.T.to_dict().values() 
+  recomm = format_imdbid(recomm)
+  return recomm
+
 
 

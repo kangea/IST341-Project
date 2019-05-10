@@ -7,7 +7,9 @@ from django.core import serializers
 from django import forms
 from .service.recommend_service import get_popular_movies_mock
 from .service.recommend_service import get_all_movies
-from .service.recommend_service import get_personalized_recomm 
+from .service.recommend_service import get_cosine_recomm 
+from .service.recommend_service import get_pearson_recomm 
+from .service.recommend_service import get_recomm 
 import json
 
 # Create your views here.
@@ -43,9 +45,13 @@ def recform(request):
       watchedMovies.append(getMovieidAndRating(form, "movie5","Movie5Rating"))
 
       print("WM",watchedMovies)
-      recommended_movies = get_personalized_recomm(watchedMovies)
-      print(recommended_movies)
-      context["recommended_movies"] = recommended_movies
+      recommended_movies1 = get_cosine_recomm(watchedMovies)
+      recommended_movies2 = get_pearson_recomm(watchedMovies)
+      recommended_movies3 = get_recomm(watchedMovies)
+      print(recommended_movies1)
+      context["recommended_movies1"] = recommended_movies1
+      context["recommended_movies2"] = recommended_movies2
+      context["recommended_movies3"] = recommended_movies3
       return render(request, 'results.html', context)  
 
   return render(request, 'recform.html', context)
