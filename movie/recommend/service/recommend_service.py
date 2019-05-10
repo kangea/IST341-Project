@@ -125,7 +125,11 @@ def format_imdbid(items):
 
 def get_all_movies():
   movies_list = movies.T.to_dict().values() 
-  return movies_list
+  all_movie = []
+  for item in movies_list:
+    all_movie.append(item)
+
+  return all_movie
 
 def get_personalized_recomm(movie_list):
   user = 9999999

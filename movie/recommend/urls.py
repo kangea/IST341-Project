@@ -9,5 +9,6 @@ from . import views
 urlpatterns = [
     path('health', views.health, name='health'),
     path('', views.home, name='home'),
-    path('recform', views.recform, name='recform')
+    path('recform', views.recform, name='recform'),
+    path('movies', views.getAllMovies, name='movielist')
 ]
