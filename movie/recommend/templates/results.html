@@ -1,29 +1,53 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <h2>Recommended Movies</h2>
-    <p>
-        Please review our recommendations and give us <a href="https://forms.gle/6drN22FEaNVJ9oP18">feedback</a>!
-    </p>
+<br>
+<h2>Recommended Movies</h2>
+<p>
+    Please review our recommendations and provide your <a href="https://forms.gle/6drN22FEaNVJ9oP18">feedback</a>! Thank you!
+</p>
+ <div>
+    <h3>Recommended Movies by Turicreate</h3>
 
     <div class="row">
-            {% if recommended_movies %}
-                {% for movie in recommended_movies %}
-                    <div class="col-4 col-md-3 movie_box">
-                        <div class="card">
-                            <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i=tt{{ movie.imdbId }}" alt="N/A"></a>
-                            <div class="card-body">
-                                <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}">
-                                    <p class="h6">{{ movie.title }}</p>
-                                </a>
-                            </div>
+        {% if recommended_movies3 %}
+            {% for movie in recommended_movies3 %}
+                <div class="col-4 col-md-3 movie_box">
+                    <div class="card">
+                        <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i=tt{{ movie.imdbId }}" alt="N/A"></a>
+                        <div class="card-body">
+                            <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}">
+                                <p class="h6">{{ movie.title }}</p>
+                            </a>
                         </div>
                     </div>
-                {% endfor %}
-            {% else %}
-                <p>No movies available</p>
-            {% endif %}
-        </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No movies available</p>
+        {% endif %}
+    </div>
+ </div> 
+<div>
+    <h3>Recommended Movies by Cosine Similarity</h3>
 
+    <div class="row">
+        {% if recommended_movies1 %}
+            {% for movie in recommended_movies1 %}
+                <div class="col-4 col-md-3 movie_box">
+                    <div class="card">
+                        <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i=tt{{ movie.imdbId }}" alt="N/A"></a>
+                        <div class="card-body">
+                            <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}">
+                                <p class="h6">{{ movie.title }}</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No movies available</p>
+        {% endif %}
+    </div>
+ </div>     
 {% endblock %}

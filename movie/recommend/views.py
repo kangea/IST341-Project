@@ -7,7 +7,9 @@ from django.core import serializers
 from django import forms
 from .service.recommend_service import get_popular_movies_mock
 from .service.recommend_service import get_all_movies
-from .service.recommend_service import get_personalized_recomm 
+from .service.recommend_service import get_cosine_recomm 
+from .service.recommend_service import get_pearson_recomm 
+from .service.recommend_service import get_recomm 
 import json
 
 # Create your views here.
@@ -41,10 +43,20 @@ def recform(request):
       watchedMovies.append(getMovieidAndRating(form, "movie3","Movie3Rating"))
       watchedMovies.append(getMovieidAndRating(form, "movie4","Movie4Rating"))
       watchedMovies.append(getMovieidAndRating(form, "movie5","Movie5Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie6","Movie6Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie7","Movie7Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie8","Movie8Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie9","Movie9Rating"))
+      watchedMovies.append(getMovieidAndRating(form, "movie10","Movie10Rating"))      
 
       print("WM",watchedMovies)
-      recommended_movies = get_personalized_recomm(watchedMovies)
-      print(recommended_movies)
+      recommended_movies1 = get_cosine_recomm(watchedMovies)
+      recommended_movies2 = get_pearson_recomm(watchedMovies)
+      recommended_movies3 = get_recomm(watchedMovies)
+      print(recommended_movies1)
+      context["recommended_movies1"] = recommended_movies1
+      context["recommended_movies2"] = recommended_movies2
+      context["recommended_movies3"] = recommended_movies3
       return render(request, 'results.html', context)  
 
   return render(request, 'recform.html', context)
@@ -76,6 +88,16 @@ class RecommendForm(forms.Form):
   Movie3Rating = forms.IntegerField(widget=forms.RadioSelect())
   Movie4Rating = forms.IntegerField(widget=forms.RadioSelect())
   Movie5Rating = forms.IntegerField(widget=forms.RadioSelect())
+  movie6 = forms.CharField(label='Movie 6', max_length=100)
+  movie7 = forms.CharField(label='Movie 7', max_length=100)
+  movie8 = forms.CharField(label='Movie 8', max_length=100)
+  movie9 = forms.CharField(label='Movie 9', max_length=100)
+  movie10 = forms.CharField(label='Movie 10', max_length=100)
+  Movie6Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie7Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie8Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie9Rating = forms.IntegerField(widget=forms.RadioSelect())
+  Movie10Rating = forms.IntegerField(widget=forms.RadioSelect())  
 
 def getMovieidAndRating(form, id_att, rating_att):
   id = form.cleaned_data[id_att].split(":")[0]
