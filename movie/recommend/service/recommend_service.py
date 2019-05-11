@@ -164,7 +164,7 @@ def get_cosine_recomm(movie_list):
   #recomm = recommend_model(trained_model, [user], 12)
 
   new_obs_data = get_observation(movie_list,user)
-  recomm = cosine_model.recommend([user], new_observation_data = new_obs_data)
+  recomm = cosine_model.recommend([user], new_observation_data = new_obs_data, k=12)
 
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
@@ -179,7 +179,7 @@ def get_pearson_recomm(movie_list):
   #recomm = recommend_model(trained_model, [user], 12)
 
   new_obs_data = get_observation(movie_list,user)
-  recomm = pearson_model.recommend([user], new_observation_data = new_obs_data)
+  recomm = pearson_model.recommend([user], new_observation_data = new_obs_data, k=12)
 
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
@@ -194,7 +194,7 @@ def get_recomm(movie_list):
   #recomm = recommend_model(trained_model, [user], 12)
 
   new_obs_data = get_observation(movie_list,user)
-  recomm = general_model.recommend([user], new_observation_data = new_obs_data)
+  recomm = general_model.recommend([user], new_observation_data = new_obs_data, k=12)
 
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
