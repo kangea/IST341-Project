@@ -30,6 +30,10 @@ target = "rating"
 train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Drama","Fantasy","Horror","Mystery","Romance","SciFi","Thriller","rating"]]
 train_data_full = tc.SFrame(train_data_full)
 
+general_model = None
+cosine_model = None
+pearson_model = None
+
 def split_data(data):
     '''
     Splits dataset into training and test set.
@@ -60,6 +64,21 @@ def model_pearson(train_data, user_id, item_id, target):
 
 def model_general(train_data, user_id, item_id, target):
   return tc.recommender.create(train_data, user_id=user_id, item_id=item_id, target=target)
+
+def train_model_general():
+  global general_model
+  general_model =  model_general(train_data_full, user_id="userId", item_id="movieId", target="rating")
+  #general_model.save("general_model.model")
+
+def train_model_cosine():
+  global cosine_model
+  cosine_model =  model_cosine(train_data_full, user_id="userId", item_id="movieId", target="rating")
+  #general_model.save("general_model.model")
+
+def train_model_pearson():
+  global pearson_model
+  pearson_model =  model_pearson(train_data_full, user_id="userId", item_id="movieId", target="rating")
+  #general_model.save("general_model.model")
 
 def recommend_model(model, users, rec_size):
   recommand = model.recommend(users=users, k=rec_size)
@@ -140,10 +159,13 @@ def get_all_movies():
 
 def get_cosine_recomm(movie_list):
   user=9999999
-  train_data_full = get_user_sf(movie_list,user)
+  #train_data_full = get_extended_training_data(movie_list,user)
+  #trained_model = model_cosine(train_data_full, user_id, item_id, target)
+  #recomm = recommend_model(trained_model, [user], 12)
 
-  trained_model = model_cosine(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 12)
+  new_obs_data = get_observation(movie_list,user)
+  recomm = cosine_model.recommend([user], new_observation_data = new_obs_data)
+
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
@@ -152,10 +174,13 @@ def get_cosine_recomm(movie_list):
 
 def get_pearson_recomm(movie_list):
   user=9999999
-  train_data_full = get_user_sf(movie_list,user)
+  #train_data_full = get_extended_training_data(movie_list,user)
+  #trained_model = model_pearson(train_data_full, user_id, item_id, target)
+  #recomm = recommend_model(trained_model, [user], 12)
 
-  trained_model = model_pearson(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 12)
+  new_obs_data = get_observation(movie_list,user)
+  recomm = pearson_model.recommend([user], new_observation_data = new_obs_data)
+
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
@@ -164,11 +189,13 @@ def get_pearson_recomm(movie_list):
 
 def get_recomm(movie_list):
   user=9999999
-  train_data_full = get_user_sf(movie_list,user)
-  #selected_data = train_data_full.select_columns(['userId', 'movieId'])
+  #train_data_full = get_extended_training_data(movie_list,user)
+  #trained_model = model_general(train_data_full, user_id, item_id, target)
+  #recomm = recommend_model(trained_model, [user], 12)
 
-  trained_model = model_general(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 12)
+  new_obs_data = get_observation(movie_list,user)
+  recomm = general_model.recommend([user], new_observation_data = new_obs_data)
+
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
@@ -176,7 +203,7 @@ def get_recomm(movie_list):
   return recomm
 
 
-def get_user_sf(movie_list,user):
+def get_extended_training_data(movie_list,user):
   item_list = []
   for item in movie_list:
     a = movies_ratings.loc[movies_ratings['movieId'] == int(item["movieId"])]
@@ -190,4 +217,20 @@ def get_user_sf(movie_list,user):
   #final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
   final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Drama","Fantasy","Horror","Mystery","Romance","SciFi","Thriller","rating"]]
   final_sf = train_data_full.append(tc.SFrame(final_df))
+  return final_sf
+
+def get_observation(movie_list,user):
+  item_list = []
+  for item in movie_list:
+    a = movies_ratings.loc[movies_ratings['movieId'] == int(item["movieId"])]
+    b = a.iloc[:1] 
+    c = list(b.T.to_dict().values())[0]
+    c["userId"] = user
+    c["rating"] = float(item["rating"])
+    item_list.append(c)
+
+  new_df = pd.DataFrame(item_list)
+  #final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
+  final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Drama","Fantasy","Horror","Mystery","Romance","SciFi","Thriller","rating"]]
+  final_sf = tc.SFrame(final_df)
   return final_sf
