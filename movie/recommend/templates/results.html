@@ -10,11 +10,13 @@
     <div class="row">
             {% if recommended_movies %}
                 {% for movie in recommended_movies %}
-                    <div class="col-4 movie_box">
+                    <div class="col-4 col-md-3 movie_box">
                         <div class="card">
                             <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i=tt{{ movie.imdbId }}" alt="N/A"></a>
                             <div class="card-body">
-                                <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}"><h5>{{ movie.title }}</h5></a>
+                                <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}">
+                                    <p class="h6">{{ movie.title }}</p>
+                                </a>
                             </div>
                         </div>
                     </div>
