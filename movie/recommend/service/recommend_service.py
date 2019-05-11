@@ -117,7 +117,7 @@ def get_mock_user_likes():
 def get_popular_movies(users, size):
 
   trained_model = model_popular(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [135], 6)
+  recomm = recommend_model(trained_model, users, size)
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
