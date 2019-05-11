@@ -1,4 +1,6 @@
 
+
+/* TYPEHEAD CSS */
 .typeahead,
 .tt-query,
 .tt-hint {
@@ -65,3 +67,55 @@
 .tt-suggestion p {
   margin: 0;
 }
+
+/* RESPONSIVE */
+.h6 {
+    font-size: 0.7rem;
+  }
+
+  @media (min-width: 525px) {
+
+    .movie_box {
+        height: 300px;
+    }
+  }
+  
+  @media (min-width: 768px) {
+    .h6 {
+      font-size: 0.8rem;
+    }
+
+    .movie_box {
+        height: 325px;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .h6 {
+      font-size: 0.9rem;
+    }
+
+    .card-img-top {
+        object-fit: cover;
+        height: 325px;
+    }
+    
+    .movie_box {
+        height: 450px;
+    }
+  }
+  
+  @media (min-width: 1200px) {
+    .h6 {
+      font-size: 1rem;
+    }
+
+    .card-img-top {
+    object-fit: cover;
+    height: 400px;
+    }
+
+    .movie_box {
+        height: 550px;
+    }
+  }
