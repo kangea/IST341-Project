@@ -20,7 +20,7 @@ def health(request):
 
 
 def home(request):
-  popular_movies = get_popular_movies([99999],10)
+  popular_movies = get_popular_movies([99999],12)
   context = {
     "popular_movies":popular_movies
     }

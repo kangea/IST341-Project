@@ -24,9 +24,10 @@ user_id = "userId"
 item_id = "movieId"
 target = "rating"
 
-# train will all data for web request
+# train with some data for web request
 # train_data_full = movies_ratings[["userId", "movieId", "rating"]]
-train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
+#train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
+train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Drama","Fantasy","Horror","Mystery","Romance","SciFi","Thriller","rating"]]
 train_data_full = tc.SFrame(train_data_full)
 
 def split_data(data):
@@ -142,7 +143,7 @@ def get_cosine_recomm(movie_list):
   train_data_full = get_user_sf(movie_list,user)
 
   trained_model = model_cosine(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 10)
+  recomm = recommend_model(trained_model, [user], 12)
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
@@ -154,7 +155,7 @@ def get_pearson_recomm(movie_list):
   train_data_full = get_user_sf(movie_list,user)
 
   trained_model = model_pearson(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 10)
+  recomm = recommend_model(trained_model, [user], 12)
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
@@ -167,7 +168,7 @@ def get_recomm(movie_list):
   #selected_data = train_data_full.select_columns(['userId', 'movieId'])
 
   trained_model = model_general(train_data_full, user_id, item_id, target)
-  recomm = recommend_model(trained_model, [user], 10)
+  recomm = recommend_model(trained_model, [user], 12)
   recomm = recomm.to_dataframe()
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
@@ -186,6 +187,7 @@ def get_user_sf(movie_list,user):
     item_list.append(c)
 
   new_df = pd.DataFrame(item_list)
-  final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
+  #final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
+  final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Drama","Fantasy","Horror","Mystery","Romance","SciFi","Thriller","rating"]]
   final_sf = train_data_full.append(tc.SFrame(final_df))
   return final_sf
