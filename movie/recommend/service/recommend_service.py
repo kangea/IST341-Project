@@ -25,7 +25,8 @@ item_id = "movieId"
 target = "rating"
 
 # train will all data for web request
-train_data_full = movies_ratings[["userId", "movieId", "rating"]]
+# train_data_full = movies_ratings[["userId", "movieId", "rating"]]
+train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western-1","NA","rating"]]
 train_data_full = tc.SFrame(train_data_full)
 
 def split_data(data):
@@ -48,16 +49,16 @@ def split_data(data):
 #train_data, test_data = split_data(movies_ratings)
 
 def model_popular(train_data, user_id, item_id, target):
-  return tc.popularity_recommender.create(train_data,user_id=user_id,item_id=item_id,target=target)
+  return tc.popularity_recommender.create(train_data,user_id=user_id,item_id=item_id)
 
 def model_cosine(train_data, user_id, item_id, target):
-  return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id,target=target, similarity_type='cosine')
+  return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id, similarity_type='cosine')
 
 def model_pearson(train_data, user_id, item_id, target):
-  return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id,target=target, similarity_type='pearson')
+  return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id, similarity_type='pearson')
 
 def model_general(train_data, user_id, item_id, target):
-  return tc.recommender.create(train_data, user_id=user_id, item_id=item_id, target='rating')
+  return tc.recommender.create(train_data, user_id=user_id, item_id=item_id, target=target)
 
 def recommend_model(model, users, rec_size):
   recommand = model.recommend(users=users, k=rec_size)
@@ -137,21 +138,8 @@ def get_all_movies():
   return all_movie
 
 def get_cosine_recomm(movie_list):
-  user = 9999999
-  for item in movie_list:
-    item["userId"] = user
-
-  frame_obj = {
-    "userId":[],
-    "movieId":[],
-    "rating":[]
-  }
-  for item in movie_list:
-    frame_obj["userId"].append(item["userId"])
-    frame_obj["movieId"].append(int(item["movieId"]))
-    frame_obj["rating"].append(float(item["rating"]))
-
-  train_data_full.append(tc.SFrame(frame_obj))
+  user=9999999
+  train_data_full = get_user_sf(movie_list,user)
 
   trained_model = model_cosine(train_data_full, user_id, item_id, target)
   recomm = recommend_model(trained_model, [user], 10)
@@ -162,21 +150,8 @@ def get_cosine_recomm(movie_list):
   return recomm
 
 def get_pearson_recomm(movie_list):
-  user = 9999999
-  for item in movie_list:
-    item["userId"] = user
-
-  frame_obj = {
-    "userId":[],
-    "movieId":[],
-    "rating":[]
-  }
-  for item in movie_list:
-    frame_obj["userId"].append(item["userId"])
-    frame_obj["movieId"].append(int(item["movieId"]))
-    frame_obj["rating"].append(float(item["rating"]))
-
-  train_data_full.append(tc.SFrame(frame_obj))
+  user=9999999
+  train_data_full = get_user_sf(movie_list,user)
 
   trained_model = model_pearson(train_data_full, user_id, item_id, target)
   recomm = recommend_model(trained_model, [user], 10)
@@ -187,21 +162,9 @@ def get_pearson_recomm(movie_list):
   return recomm
 
 def get_recomm(movie_list):
-  user = 9999999
-  for item in movie_list:
-    item["userId"] = user
-
-  frame_obj = {
-    "userId":[],
-    "movieId":[],
-    "rating":[]
-  }
-  for item in movie_list:
-    frame_obj["userId"].append(item["userId"])
-    frame_obj["movieId"].append(int(item["movieId"]))
-    frame_obj["rating"].append(float(item["rating"]))
-
-  train_data_full.append(tc.SFrame(frame_obj))
+  user=9999999
+  train_data_full = get_user_sf(movie_list,user)
+  #selected_data = train_data_full.select_columns(['userId', 'movieId'])
 
   trained_model = model_general(train_data_full, user_id, item_id, target)
   recomm = recommend_model(trained_model, [user], 10)
@@ -212,4 +175,17 @@ def get_recomm(movie_list):
   return recomm
 
 
+def get_user_sf(movie_list,user):
+  item_list = []
+  for item in movie_list:
+    a = movies_ratings.loc[movies_ratings['movieId'] == int(item["movieId"])]
+    b = a.iloc[:1] 
+    c = list(b.T.to_dict().values())[0]
+    c["userId"] = user
+    c["rating"] = float(item["rating"])
+    item_list.append(c)
 
+  new_df = pd.DataFrame(item_list)
+  final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western-1","NA","rating"]]
+  final_sf = train_data_full.append(tc.SFrame(final_df))
+  return final_sf
