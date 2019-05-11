@@ -26,7 +26,7 @@ target = "rating"
 
 # train will all data for web request
 # train_data_full = movies_ratings[["userId", "movieId", "rating"]]
-train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western-1","NA","rating"]]
+train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
 train_data_full = tc.SFrame(train_data_full)
 
 def split_data(data):
@@ -186,6 +186,6 @@ def get_user_sf(movie_list,user):
     item_list.append(c)
 
   new_df = pd.DataFrame(item_list)
-  final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western-1","NA","rating"]]
+  final_df = new_df[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
   final_sf = train_data_full.append(tc.SFrame(final_df))
   return final_sf
