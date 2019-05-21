@@ -1,6 +1,7 @@
 import pandas as pd 
 import turicreate as tc
 import os
+import requests
 #from sklearn.model_selection import train_test_split
 
 file_link = "links.csv"
@@ -134,7 +135,7 @@ def get_mock_user_likes():
   ]
   return mock
 
-def get_popular_movies(users, size):
+def get_popular_movies(users= [99999], size = 12):
 
   trained_model = model_popular(train_data_full, user_id, item_id, target)
   recomm = recommend_model(trained_model, users, size)
@@ -142,12 +143,32 @@ def get_popular_movies(users, size):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
+  recomm = get_imdbinfo(recomm)
+  recomm = list(recomm)
+  #print(recomm[0])
   return recomm
 
 def format_imdbid(items):
   for item in items:
     item["imdbId"] = format(item["imdbId"], '07d')
+    item["imdbId"] = "tt"+item["imdbId"]
   return items
+
+def get_imdbinfo(items):
+  """
+  function to get imdb information from omdbapi for all movies in list "items"
+  """
+  url = "http://www.omdbapi.com"
+  for item in items:
+    imdb_id = item["imdbId"]
+    param = {
+      "apikey":"26ca6d28",
+      "i" : imdb_id
+    }
+    imdb = requests.get(url=url, params = param)
+    item["imdb"] = imdb.json()
+  return items
+
 
 def get_all_movies():
   movies_list = movies.T.to_dict().values() 

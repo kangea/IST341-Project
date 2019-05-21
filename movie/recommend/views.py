@@ -24,10 +24,11 @@ def health(request):
 
 
 def home(request):
-  popular_movies = get_popular_movies([99999],12)
+  popular_movies = get_popular_movies()
   context = {
     "popular_movies":popular_movies
     }
+  
   return render(request, 'index.html', context)
 
 def recform(request):
