@@ -9,11 +9,15 @@
             {% for movie in popular_movies %}
                 <div class="col-4 col-md-3 movie_box">
                     <div class="card">
-                        <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i=tt{{ movie.imdbId }}" alt="N/A"></a>
+                        <a href="https://www.imdb.com/title/{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i={{ movie.imdbId }}" alt="N/A"></a>
                         <div class="card-body">
-                            <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}">
-                                <p class="h6">{{ movie.title }}</p>
+                            <a href="https://www.imdb.com/title/{{ movie.imdbId }}">
+                                <p class="h6 text-center">{{ movie.title }}</p>
                             </a>
+                            <p>
+                                IMDb Rating: {{ imdb.imdbRating }} <br>
+                                Rotten Tomatoes: {{ imdb.Ratings[1]['Value']}}
+                            </p>
                         </div>
                     </div>
                 </div>
