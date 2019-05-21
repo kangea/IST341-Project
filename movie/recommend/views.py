@@ -10,20 +10,25 @@ from .service.recommend_service import get_all_movies
 from .service.recommend_service import get_cosine_recomm 
 from .service.recommend_service import get_pearson_recomm 
 from .service.recommend_service import get_recomm 
+from .service.recommend_service import train_model_general
+from .service.recommend_service import train_model_cosine
 import json
 
 # Create your views here.
 
 #### Controllers
 def health(request):
-    return HttpResponse("Application news portal Started", content_type="text/plain")
+    train_model_general()
+    train_model_cosine()
+    return HttpResponse("Application recommendation Started", content_type="text/plain")
 
 
 def home(request):
-  popular_movies = get_popular_movies([99999],12)
+  popular_movies = get_popular_movies()
   context = {
     "popular_movies":popular_movies
     }
+  
   return render(request, 'index.html', context)
 
 def recform(request):
