@@ -108,6 +108,7 @@ def get_popular_movies_mock():
     {'userId': 135, 'movieId': 99, 'score': 5.0, 'rank': 5, 'title': 'Heidi Fleiss: Hollywood Madam (1995)', 'imdbId': 113283}, 
     {'userId': 135, 'movieId': 70451, 'score': 5.0, 'rank': 6, 'title': 'Max Manus (2008)', 'imdbId': 1029235}]
   mock = format_imdbid(mock)
+  mock = get_imdbinfo(mock)
   return mock
 
 def get_mock_user_likes():
