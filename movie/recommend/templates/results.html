@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<br>
+<h2>Recommended Movies</h2>
+<p>
+    Please review our recommendations and provide your <a href="https://forms.gle/6drN22FEaNVJ9oP18">feedback</a>! Thank you!
+</p>
+ <div>
+    <h3>Recommended Movies by Turicreate</h3>
+
+    <div class="row">
+        {% if recommended_movies3 %}
+            {% for movie in recommended_movies3 %}
+                <div class="col-4 col-md-3 movie_box">
+                    <div class="card">
+                        <a href="https://www.imdb.com/title/{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i={{ movie.imdbId }}" alt="N/A"></a>
+                        <div class="card-body">
+                            <a href="https://www.imdb.com/title/{{ movie.imdbId }}">
+                                <p class="h6">{{ movie.title }}</p>
+                            </a>
+                            <p class="small">
+                                <img src="{% static 'imdbicon.png' %}"> IMDb Rating: {{ movie.imdb.imdbRating }} <br>
+                                {% if movie.imdb.Ratings.1.Source == "Rotten Tomatoes" %}
+                                    <img src="https://img.icons8.com/color/16/000000/tomato.png"> 
+                                    Rotten Tomatoes: {{ movie.imdb.Ratings.1.Value }}
+                                {% elif movie.Ratings.2 %}
+                                    {% if movie.imdb.Ratings.2.Source == "Rotten Tomatoes" %}
+                                        <img src="https://img.icons8.com/color/16/000000/tomato.png"> 
+                                        Rotten Tomatoes: {{ movie.imdb.Ratings.2.Value }}
+                                    {% endif %}
+                                {% else %}
+                                    <img src="https://img.icons8.com/color/16/000000/tomato.png"> Rotten Tomatoes: N/A
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No movies available</p>
+        {% endif %}
+    </div>
+ </div> 
+<div>
+    <h3>Recommended Movies by Cosine Similarity</h3>
+
+    <div class="row">
+        {% if recommended_movies1 %}
+            {% for movie in recommended_movies1 %}
+                <div class="col-4 col-md-3 movie_box">
+                    <div class="card">
+                        <a href="https://www.imdb.com/title/{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i={{ movie.imdbId }}" alt="N/A"></a>
+                        <div class="card-body">
+                            <a href="https://www.imdb.com/title/{{ movie.imdbId }}">
+                                <p class="h6">{{ movie.title }}</p>
+                            </a>
+                            <p class="small">
+                                <img src="{% static 'imdbicon.png' %}"> IMDb Rating: {{ movie.imdb.imdbRating }} <br>
+                                {% if movie.imdb.Ratings.1.Source == "Rotten Tomatoes" %}
+                                    <img src="https://img.icons8.com/color/16/000000/tomato.png"> 
+                                    Rotten Tomatoes: {{ movie.imdb.Ratings.1.Value }}
+                                {% elif movie.Ratings.2 %}
+                                    {% if movie.imdb.Ratings.2.Source == "Rotten Tomatoes" %}
+                                        <img src="https://img.icons8.com/color/16/000000/tomato.png"> 
+                                        Rotten Tomatoes: {{ movie.imdb.Ratings.2.Value }}
+                                    {% endif %}
+                                {% else %}
+                                    <img src="https://img.icons8.com/color/16/000000/tomato.png"> Rotten Tomatoes: N/A
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No movies available</p>
+        {% endif %}
+    </div>
+ </div>     
+{% endblock %}
