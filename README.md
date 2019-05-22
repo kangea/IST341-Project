@@ -3,6 +3,8 @@
 ## Required softwares 
 Python 3.6
 
+Pip pip 19.1
+
 pipenv 2018.11.26
 
 # Run the application
