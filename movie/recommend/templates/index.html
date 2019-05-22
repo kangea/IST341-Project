@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
     <br>
@@ -8,12 +9,26 @@
         {% if popular_movies %}
             {% for movie in popular_movies %}
                 <div class="col-4 col-md-3 movie_box">
-                    <div class="card">
-                        <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i=tt{{ movie.imdbId }}" alt="N/A"></a>
+                    <div class="card border-light">
+                        <a href="https://www.imdb.com/title/{{ movie.imdbId }}/"><img class="card-img-top" src="http://img.omdbapi.com/?apikey=26ca6d28&i={{ movie.imdbId }}" alt="N/A"></a>
                         <div class="card-body">
-                            <a href="https://www.imdb.com/title/tt{{ movie.imdbId }}">
-                                <p class="h6">{{ movie.title }}</p>
+                            <a href="https://www.imdb.com/title/{{ movie.imdbId }}">
+                                <p class="h6 text-center">{{ movie.title }}</p>
                             </a>
+                            <p class="small">
+                                <img src="{% static 'imdbicon.png' %}"> IMDb Rating: {{ movie.imdb.imdbRating }} <br>
+                                {% if movie.imdb.Ratings.1.Source == "Rotten Tomatoes" %}
+                                    <img src="https://img.icons8.com/color/16/000000/tomato.png"> 
+                                    Rotten Tomatoes: {{ movie.imdb.Ratings.1.Value }}
+                                {% elif movie.Ratings.2 %}
+                                    {% if movie.imdb.Ratings.2.Source == "Rotten Tomatoes" %}
+                                        <img src="https://img.icons8.com/color/16/000000/tomato.png"> 
+                                        Rotten Tomatoes: {{ movie.imdb.Ratings.2.Value }}
+                                    {% endif %}
+                                {% else %}
+                                    <img src="https://img.icons8.com/color/16/000000/tomato.png"> Rotten Tomatoes: N/A
+                                {% endif %}
+                            </p>
                         </div>
                     </div>
                 </div>
