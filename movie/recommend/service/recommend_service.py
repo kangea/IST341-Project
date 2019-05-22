@@ -2,10 +2,9 @@ import pandas as pd
 import turicreate as tc
 import os
 import requests
-#from sklearn.model_selection import train_test_split
 
+# data from the reference source in csv format
 file_link = "links.csv"
-#file_movies_ratings = "movies_ratings.csv"
 file_movies_ratings = "movies_ratings_clean.csv"
 file_movies_links = "movies_links.csv"
 file_movies = "movies.csv"
@@ -25,9 +24,7 @@ user_id = "userId"
 item_id = "movieId"
 target = "rating"
 
-# train with some data for web request
-# train_data_full = movies_ratings[["userId", "movieId", "rating"]]
-#train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Documentary","Drama","Fantasy","FilmNoir","Horror","Musical","Mystery","Romance","SciFi","Thriller","War","Western","NA","rating"]]
+# create a train data for the model consisting of necessary attributes
 train_data_full = movies_ratings[["userId","movieId","Action","Adventure","Animation","Children","Comedy","Crime","Drama","Fantasy","Horror","Mystery","Romance","SciFi","Thriller","rating"]]
 train_data_full = tc.SFrame(train_data_full)
 
@@ -55,38 +52,80 @@ def split_data(data):
 #train_data, test_data = split_data(movies_ratings)
 
 def model_popular(train_data, user_id, item_id, target):
+  """
+  Function that runs turicreate's popularlity recommendation model based on
+  input of train_data, user_id, item_id, target
+  """
   return tc.popularity_recommender.create(train_data,user_id=user_id,item_id=item_id)
 
 def model_cosine(train_data, user_id, item_id, target):
+  """
+  Function that runs turicreate's cosine similarity based recommendation model based on
+  input of train_data, user_id, item_id, target
+  """  
   return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id, similarity_type='cosine')
 
 def model_pearson(train_data, user_id, item_id, target):
+  """
+  Function that runs turicreate's pearson similarity based recommendation model based on
+  input of train_data, user_id, item_id, target
+  """   
   return tc.item_similarity_recommender.create(train_data,user_id=user_id,item_id=item_id, similarity_type='pearson')
 
 def model_general(train_data, user_id, item_id, target):
+  """
+  Function that runs turicreate's default recommendation model based on
+  input of train_data, user_id, item_id, target
+  this model selects the best recommedation algorithm itself based on the data provided,
+  according to the documentation of turicreate
+  """    
   return tc.recommender.create(train_data, user_id=user_id, item_id=item_id, target=target)
 
 def train_model_general():
+  """
+  Function that calls model_general and stores the model it in global variable general_model,
+  so that the model can be accessed in mulitple web application sessions of
+  different app users
+  """
   global general_model
   general_model =  model_general(train_data_full, user_id="userId", item_id="movieId", target="rating")
   #general_model.save("general_model.model")
 
 def train_model_cosine():
+  """
+  Function that calls model_cosine and stores the model in global variable cosine_model,
+  so that the model can be accessed in mulitple web application sessions of
+  different app users
+  """  
   global cosine_model
   cosine_model =  model_cosine(train_data_full, user_id="userId", item_id="movieId", target="rating")
   #general_model.save("general_model.model")
 
 def train_model_pearson():
+  """
+  Function that calls model_pearson and stores the model in global variable pearson_model,
+  so that the model can be accessed in mulitple web application sessions of
+  different app users
+  """  
   global pearson_model
   pearson_model =  model_pearson(train_data_full, user_id="userId", item_id="movieId", target="rating")
   #general_model.save("general_model.model")
 
 def recommend_model(model, users, rec_size):
+  """
+  Function that takes model object, users, rec_size as input and,
+  provides rec_size numbers of recommendation based on model to
+  user in users lists
+  """
   recommand = model.recommend(users=users, k=rec_size)
   #recommand.print_rows(display_size)
   return recommand
 
 def test_modeling():
+  """
+  Function used for testing the modeling process,
+  mocks users, does training and prints recommendation for the usesrs
+  """  
   users = [135,136,137]
   train_data = movies_ratings[["userId", "movieId", "rating"]]
   train_data = tc.SFrame(train_data)
@@ -99,7 +138,7 @@ def test_modeling():
 
 def get_popular_movies_mock():
   """
-  mock data of popular movies for devlopment purpose
+  Function that mocks data of popular movies for devlopment purpose
   """
   mock = [
     {'userId': 135, 'movieId': 3851, 'score': 5.0, 'rank': 2, 'title': "I'm the One That I Want (2000)", 'imdbId': 251739}, 
@@ -112,6 +151,10 @@ def get_popular_movies_mock():
   return mock
 
 def get_mock_user_likes():
+  """
+  Function that provides mock data of user-movies ratings input
+  used in development testing
+  """  
   mock = [
     {
       'movieId':3851,
@@ -137,7 +180,10 @@ def get_mock_user_likes():
   return mock
 
 def get_popular_movies(users= [99999], size = 12):
-
+  """
+  Function that provides recommendated movies based on popularity,
+  the most popular movies are same for all users
+  """
   trained_model = model_popular(train_data_full, user_id, item_id, target)
   recomm = recommend_model(trained_model, users, size)
   recomm = recomm.to_dataframe()
@@ -146,7 +192,7 @@ def get_popular_movies(users= [99999], size = 12):
   recomm = format_imdbid(recomm)
   recomm = get_imdbinfo(recomm)
   recomm = list(recomm)
-  #print(recomm[0])
+  print(recomm[0])
   return recomm
 
 def format_imdbid(items):
@@ -180,10 +226,12 @@ def get_all_movies():
   return all_movie
 
 def get_cosine_recomm(movie_list):
+  """
+  Function that provides recommendated movies based on consine similarity,
+  takes list of movies with rating from user and provides recommendation
+  based on user choices
+  """  
   user=9999999
-  #train_data_full = get_extended_training_data(movie_list,user)
-  #trained_model = model_cosine(train_data_full, user_id, item_id, target)
-  #recomm = recommend_model(trained_model, [user], 12)
 
   new_obs_data = get_observation(movie_list,user)
   recomm = cosine_model.recommend([user], new_observation_data = new_obs_data, k=12)
@@ -192,13 +240,16 @@ def get_cosine_recomm(movie_list):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
+  #recomm = get_imdbinfo(recomm)
   return recomm
 
 def get_pearson_recomm(movie_list):
+  """
+  Function that provides recommendated movies based on pearson similarity,
+  takes list of movies with rating from user and provides recommendation
+  based on user choices
+  """    
   user=9999999
-  #train_data_full = get_extended_training_data(movie_list,user)
-  #trained_model = model_pearson(train_data_full, user_id, item_id, target)
-  #recomm = recommend_model(trained_model, [user], 12)
 
   new_obs_data = get_observation(movie_list,user)
   recomm = pearson_model.recommend([user], new_observation_data = new_obs_data, k=12)
@@ -207,14 +258,16 @@ def get_pearson_recomm(movie_list):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
+  #recomm = get_imdbinfo(recomm)
   return recomm
 
 def get_recomm(movie_list):
+  """
+  Function that provides recommendated movies based on turicreat's default recommender,
+  takes list of movies with rating from user and provides recommendation
+  based on user choices
+  """    
   user=9999999
-  #train_data_full = get_extended_training_data(movie_list,user)
-  #trained_model = model_general(train_data_full, user_id, item_id, target)
-  #recomm = recommend_model(trained_model, [user], 12)
-
   new_obs_data = get_observation(movie_list,user)
   recomm = general_model.recommend([user], new_observation_data = new_obs_data, k=12)
 
@@ -222,10 +275,14 @@ def get_recomm(movie_list):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
+  #recomm = get_imdbinfo(recomm)
   return recomm
 
 
 def get_extended_training_data(movie_list,user):
+  """
+  function that appends the movies list obtain from user form to existing train data
+  """
   item_list = []
   for item in movie_list:
     a = movies_ratings.loc[movies_ratings['movieId'] == int(item["movieId"])]
@@ -242,6 +299,11 @@ def get_extended_training_data(movie_list,user):
   return final_sf
 
 def get_observation(movie_list,user):
+  """
+  function that converts the movie list collected from user form to,
+  a format that the modeling supports which is SFrame.
+  Also movie genre are added to the form data based on existing movie list data that we have in movie_list
+  """
   item_list = []
   for item in movie_list:
     a = movies_ratings.loc[movies_ratings['movieId'] == int(item["movieId"])]
