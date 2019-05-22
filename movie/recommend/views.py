@@ -18,12 +18,22 @@ import json
 
 #### Controllers
 def health(request):
-    train_model_general()
-    train_model_cosine()
-    return HttpResponse("Application recommendation Started", content_type="text/plain")
+  """
+  Endpoint that is used to start the training the models
+  The endpoint is called right after deploying the app to train the model
+  and make the model available globally for accessing it in multi user sessions
+  This gives flexibility of not having to train the model on every user form submission
+  """
+  train_model_general()
+  train_model_cosine()
+  return HttpResponse("Application recommendation Started", content_type="text/plain")
 
 
 def home(request):
+  """
+  Endpoint for home page.
+  returns "index.html" with popular movies
+  """
   popular_movies = get_popular_movies()
   context = {
     "popular_movies":popular_movies
@@ -32,6 +42,11 @@ def home(request):
   return render(request, 'index.html', context)
 
 def recform(request):
+  """
+  Endpoint for user movies form submission.
+  returns "results.html" with recommended movies if form validation is success
+  else return the form page "recform.html" itself
+  """ 
   movie_list = get_all_movies()
   context = {
     "movie_list":movie_list,
@@ -69,6 +84,10 @@ def recform(request):
   return render(request, 'recform.html', context)
 
 def getAllMovies(request):
+  """
+  format the movies data in such way that,
+  auto-fill library typeahead.js expects to use it
+  """
   movie_list = get_all_movies()
   new_list = []
   length = len(movie_list)
@@ -85,6 +104,10 @@ def getAllMovies(request):
   return JsonResponse(res, safe=False)
 
 class RecommendForm(forms.Form):
+  """
+  used django from model to generate form object,
+  has helper methods for form validation.
+  """
   movie1 = forms.CharField(label='Movie 1', max_length=100)
   movie2 = forms.CharField(label='Movie 2', max_length=100)
   movie3 = forms.CharField(label='Movie 3', max_length=100)
@@ -107,6 +130,10 @@ class RecommendForm(forms.Form):
   #Movie10Rating = forms.IntegerField(widget=forms.RadioSelect())  
 
 def getMovieidAndRating(form, id_att, rating_att):
+  """
+  helper function to format the form inputs into,
+  object of movieId and rating
+  """
   id = form.cleaned_data[id_att].split(":")[0]
   rating = form.cleaned_data[rating_att]
   obj = {"movieId": id, "rating":rating}
