@@ -192,7 +192,7 @@ def get_popular_movies(users= [99999], size = 12):
   recomm = format_imdbid(recomm)
   recomm = get_imdbinfo(recomm)
   recomm = list(recomm)
-  print(recomm[0])
+  #print(recomm[0])
   return recomm
 
 def format_imdbid(items):
@@ -240,7 +240,7 @@ def get_cosine_recomm(movie_list):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
-  #recomm = get_imdbinfo(recomm)
+  recomm = get_imdbinfo(recomm)
   return recomm
 
 def get_pearson_recomm(movie_list):
@@ -258,7 +258,7 @@ def get_pearson_recomm(movie_list):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
-  #recomm = get_imdbinfo(recomm)
+  recomm = get_imdbinfo(recomm)
   return recomm
 
 def get_recomm(movie_list):
@@ -275,7 +275,7 @@ def get_recomm(movie_list):
   recomm = pd.merge(recomm,movies_all[["movieId","title","imdbId"]], left_on ="movieId", right_on = "movieId", how="inner")
   recomm = recomm.T.to_dict().values() 
   recomm = format_imdbid(recomm)
-  #recomm = get_imdbinfo(recomm)
+  recomm = get_imdbinfo(recomm)
   return recomm
 
 
