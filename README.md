@@ -1,5 +1,8 @@
 # IST341-Project
 
+## Overview
+The goal of this project is to build a movie recommendation engine using the MovieLens dataset from the GroupLens Research Group and create a web application that contains a form that takes 5 favorite movies along with ratings, which will be used to recommend ten additional movies to the users. 
+
 ## Required softwares 
 Python 3.6
 
